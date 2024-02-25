@@ -1,37 +1,49 @@
 using UnityEngine;
+using System.IO;
 
 public class SaveLoadManager : MonoBehaviour
 {
+    [System.Serializable]
+    public class SaveData
+    {
+        public Vector3 playerPosition;
+        public int playerHealth;
+        public bool hasKey;
+    }
+
     public GameObject player;
 
     public void SaveGame()
     {
-        Vector3 playerPosition = player.transform.position;
+        SaveData data = new SaveData();
+        data.playerPosition = player.transform.position;
 
-        PlayerPrefs.SetFloat("PlayerPosX", playerPosition.x);
-        PlayerPrefs.SetFloat("PlayerPosY", playerPosition.y);
-        PlayerPrefs.SetFloat("PlayerPosZ", playerPosition.z);
-        PlayerPrefs.Save();
+        string jsonData = JsonUtility.ToJson(data);
+        File.WriteAllText(Application.persistentDataPath + "/saveData.json", jsonData);
     }
 
-public void LoadGame()
-{
-    if (PlayerPrefs.HasKey("PlayerPosX") && PlayerPrefs.HasKey("PlayerPosY") && PlayerPrefs.HasKey("PlayerPosZ"))
+    public void LoadGame()
     {
-        float playerPosX = PlayerPrefs.GetFloat("PlayerPosX");
-        float playerPosY = PlayerPrefs.GetFloat("PlayerPosY");
-        float playerPosZ = PlayerPrefs.GetFloat("PlayerPosZ");
+        string path = Application.persistentDataPath + "/saveData.json";
+        if (File.Exists(path))
+        {
+            string jsonData = File.ReadAllText(path);
+            SaveData data = JsonUtility.FromJson<SaveData>(jsonData);
 
-        player.transform.position = new Vector3(playerPosX, playerPosY, playerPosZ);
+            player.transform.position = data.playerPosition;
+        }
+        else
+        {
+            player.transform.position = Vector3.zero;
+        }
     }
-    else
-    {
-        player.transform.position = Vector3.zero;
-    }
-}
 
     public void ClearSavedData()
     {
-        PlayerPrefs.DeleteAll();
+        string path = Application.persistentDataPath + "/saveData.json";
+        if (File.Exists(path))
+        {
+            File.Delete(path);
+        }
     }
 }

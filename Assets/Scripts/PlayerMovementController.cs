@@ -4,6 +4,7 @@ public class PlayerMovementController : MonoBehaviour
 {
     public PlayerControls controls;
     public Rigidbody rb;
+    public Transform cameraTransform;
     private float speed = 40f;
     public float walkSpeed = 40f;
     public float runSpeed = 80f;
@@ -13,6 +14,10 @@ public class PlayerMovementController : MonoBehaviour
     private bool isPaused = false;
 
     public GameObject pauseMenuCanvas;
+
+    // Variables for camera rotation
+    public float mouseSensitivity = 2f;
+    float cameraVerticalRotation = 0f;
 
     private void Awake()
     {
@@ -26,6 +31,15 @@ public class PlayerMovementController : MonoBehaviour
     private void Update()
     {
         Move(controls.Player.Move.ReadValue<Vector2>());
+
+        float inputX = controls.Player.Look.ReadValue<Vector2>().x * mouseSensitivity;
+        float inputY = controls.Player.Look.ReadValue<Vector2>().y * mouseSensitivity;
+
+        cameraVerticalRotation -= inputY;
+        cameraVerticalRotation = Mathf.Clamp(cameraVerticalRotation, -90f, 90f);
+        cameraTransform.localEulerAngles = Vector3.right * cameraVerticalRotation;
+
+        transform.Rotate(Vector3.up * inputX);
     }
 
     private void Move(Vector2 direction)
@@ -44,7 +58,7 @@ public class PlayerMovementController : MonoBehaviour
         }
 
         Vector3 moveDirection = new Vector3(direction.x, 0f, direction.y) * speed * Time.deltaTime;
-        rb.MovePosition(transform.position + moveDirection);
+        rb.MovePosition(transform.position + transform.TransformDirection(moveDirection)); // Changed to transform.TransformDirection
     }
 
     private void Jump()
@@ -54,6 +68,7 @@ public class PlayerMovementController : MonoBehaviour
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
+
 
     private void Pause()
     {

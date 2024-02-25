@@ -13,6 +13,11 @@ public class PlayerMovementController : MonoBehaviour
     public float jumpForce = 10f;
     private bool isPaused = false;
 
+    public AudioSource a;
+
+    public AudioClip jump;
+    public AudioClip death;
+
     public GameObject pauseMenuCanvas;
 
     public float mouseSensitivity = 2f;
@@ -20,6 +25,7 @@ public class PlayerMovementController : MonoBehaviour
 
     private void Awake()
     {
+        a = GetComponent<AudioSource>();
         controls = new PlayerControls();
         rb = GetComponent<Rigidbody>();
         controls.Enable();
@@ -60,18 +66,31 @@ public class PlayerMovementController : MonoBehaviour
         rb.MovePosition(transform.position + transform.TransformDirection(moveDirection)); // Changed to transform.TransformDirection
     }
 
-    private void Jump()
+    public void Jump()
     {
         if (isGrounded)
         {
+            a.PlayOneShot(jump, 1.0f);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
 
     private void Pause()
     {
-        Time.timeScale = 0f;
-        pauseMenuCanvas.SetActive(true);
+        if (isPaused)
+        {
+            isPaused = false;
+            Time.timeScale = 1f;
+            pauseMenuCanvas.SetActive(true);
+        }
+
+        if (!isPaused)
+        {
+            isPaused = true;
+            Time.timeScale = 1f;
+            pauseMenuCanvas.SetActive(true);
+        }
+
     }
 
     private void OnCollisionEnter(Collision collision)

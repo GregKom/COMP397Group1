@@ -5,11 +5,16 @@ public class PlayerStats : MonoBehaviour
     public int maxHealth = 100;
     public int currentHealth;
     public GameObject deadMenuCanvas;
+    public int Coins;
+    public AudioSource a;
+
+    public AudioClip hurt;
 
     public event System.Action<int, int> OnHealthChanged;
 
     private void Start()
     {
+        a = GetComponent<AudioSource>();
         currentHealth = maxHealth;
         UpdateHealthUI();
     }
@@ -30,6 +35,13 @@ public class PlayerStats : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("Spike")){
             TakeDamage(10);
+            a.PlayOneShot(hurt, 1.0f);
+        }
+
+        if (collision.gameObject.tag == "Enemy")
+        {
+            TakeDamage(15);
+            a.PlayOneShot(hurt, 1.0f);
         }
     }
 

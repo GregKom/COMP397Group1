@@ -15,7 +15,6 @@ public class PlayerMovementController : MonoBehaviour
 
     public GameObject pauseMenuCanvas;
 
-    // Variables for camera rotation
     public float mouseSensitivity = 2f;
     float cameraVerticalRotation = 0f;
 
@@ -68,7 +67,6 @@ public class PlayerMovementController : MonoBehaviour
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
-
 
     private void Pause()
     {

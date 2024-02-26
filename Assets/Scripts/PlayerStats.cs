@@ -35,13 +35,13 @@ public class PlayerStats : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("Spike")){
             TakeDamage(10);
-            a.PlayOneShot(hurt, 1.0f);
+            //a.PlayOneShot(hurt, 1.0f);
         }
 
         if (collision.gameObject.tag == "Enemy")
         {
             TakeDamage(15);
-            a.PlayOneShot(hurt, 1.0f);
+            //a.PlayOneShot(hurt, 1.0f);
         }
     }
 

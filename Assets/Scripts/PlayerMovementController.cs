@@ -70,7 +70,7 @@ public class PlayerMovementController : MonoBehaviour
     {
         if (isGrounded)
         {
-            a.PlayOneShot(jump, 1.0f);
+            //a.PlayOneShot(jump, 1.0f);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
@@ -87,7 +87,7 @@ public class PlayerMovementController : MonoBehaviour
         if (!isPaused)
         {
             isPaused = true;
-            Time.timeScale = 1f;
+            Time.timeScale = 0f;
             pauseMenuCanvas.SetActive(true);
         }
 

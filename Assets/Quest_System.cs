@@ -1,84 +1,122 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public interface IAchievementObserver{
+    void OnAchievementUnlocked(int achievementIndex);
+}
 
-public class Quest_System : MonoBehaviour
-{
-    public PlayerMovementController p;
+public class Quest_System : MonoBehaviour{
+    private List<IAchievementObserver> observers = new List<IAchievementObserver>();
 
     public float move;
     public int jumps;
     public int damage_taken;
-    
+    public bool wonBool = false;
+    public PlayerStats player_stats;
+
     public bool hasAchievement1;
     public bool hasAchievement2;
     public bool hasAchievement3;
     public bool hasAchievement4;
     public bool hasAchievement5;
 
-    public Text Achievement_Text;
-    // Start is called before the first frame update
-    void Start()
-    {
+    public Text Quest_Text;
+    public Text achievementsListText;
+
+    void Start(){
+        UpdateAchievementsListText();
+    }
+
+    void Update(){
+        UpdateQuestText();
+        CheckAchievements();
         
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        Achievement_Text.text = "hello";
+    private void UpdateQuestText(){
+        Quest_Text.text = "hello";
 
-        if (hasAchievement1 == false && hasAchievement2 == false && hasAchievement3 == false && hasAchievement4 == false && hasAchievement5 == false)
-        {
-            Achievement_Text.text = "Use WASD to move.";
+        if (!hasAchievement1 && !hasAchievement2 && !hasAchievement3 && !hasAchievement4 && !hasAchievement5){
+            Quest_Text.text = "Use WASD to move.";
         }
-
-        if (hasAchievement1 == true && hasAchievement2 == false && hasAchievement3 == false && hasAchievement4 == false && hasAchievement5 == false)
-        {
-            Achievement_Text.text = "Press Space to jump.";
+        else if (hasAchievement1 && !hasAchievement2 && !hasAchievement3 && !hasAchievement4 && !hasAchievement5){
+            Quest_Text.text = "Press Space to jump.";
         }
-
-        if (hasAchievement1 == true && hasAchievement2 == true && hasAchievement3 == false && hasAchievement4 == false && hasAchievement5 == false)
-        {
-            Achievement_Text.text = "Press Space to jump 5 more times.";
+        else if (hasAchievement1 && hasAchievement2 && !hasAchievement3 && !hasAchievement4 && !hasAchievement5){
+            Quest_Text.text = "Collect 3 coins on the platforms.";
         }
-
-        if (hasAchievement1 == true && hasAchievement2 == true && hasAchievement3 == true && hasAchievement4 == false && hasAchievement5 == false)
-        {
-            Achievement_Text.text = "Use WASD to move some more.";
+        else if (hasAchievement1 && hasAchievement2 && hasAchievement3 && !hasAchievement4 && !hasAchievement5){
+            Quest_Text.text = "Take some damage by colliding with an enemy or a spike.";
         }
-
-        if (hasAchievement1 == true && hasAchievement2 == true && hasAchievement3 == true && hasAchievement4 == true && hasAchievement5 == false)
-        {
-            Achievement_Text.text = "Take some damage by colliding with an enemy or a spike.";
+        else if (hasAchievement1 && hasAchievement2 && hasAchievement3 && hasAchievement4 && !hasAchievement5){
+            Quest_Text.text = "Enter the purple square to win.";
         }
+    }
 
-
-        if (move > 2000)
-        {
+    private void CheckAchievements(){
+        if (!hasAchievement1 && move > 500){
             hasAchievement1 = true;
+            NotifyObservers(1);
         }
 
-        if (jumps > 0)
-        {
+        if (!hasAchievement2 && jumps > 5){
             hasAchievement2 = true;
+            NotifyObservers(2);
         }
 
-        if (jumps > 5)
-        {
+        if (!hasAchievement3 && player_stats.Coins > 2){
             hasAchievement3 = true;
+            NotifyObservers(3);
         }
 
-        if (move > 5000)
-        {
+        if (!hasAchievement4 && damage_taken > 1){
             hasAchievement4 = true;
+            NotifyObservers(4);
         }
 
-        if (damage_taken > 1)
-        {
+        if (!hasAchievement5 && player_stats.wonBool){
             hasAchievement5 = true;
+            NotifyObservers(5);
         }
+
+        UpdateAchievementsListText();
+    }
+
+    public void AttachObserver(IAchievementObserver observer){
+        observers.Add(observer);
+    }
+
+    public void DetachObserver(IAchievementObserver observer){
+        observers.Remove(observer);
+    }
+
+    private void NotifyObservers(int achievementIndex){
+        foreach (var observer in observers)
+        {
+            observer.OnAchievementUnlocked(achievementIndex);
+        }
+    }
+
+    private void UpdateAchievementsListText(){
+        string achievementsList = "";
+
+        if (hasAchievement1){
+            achievementsList = "- Walk around\n";
+        }
+        if (hasAchievement1 && hasAchievement2){
+            achievementsList = "- Walk around\n- Jump up\n";
+        }
+        if (hasAchievement1 && hasAchievement2 && hasAchievement3){
+            achievementsList = "- Walk around\n- Jump up\n- Collect coins\n";
+        }
+        if (hasAchievement1 && hasAchievement2 && hasAchievement3 && hasAchievement4){
+            achievementsList = "- Walk around\n- Jump up\n- Collect coins\n- Won the game\n";
+        }
+        if (hasAchievement1 && hasAchievement2 && hasAchievement3 && hasAchievement4 && hasAchievement5){
+            achievementsList = "- Walk around\n- Jump up\n- Collect coins\n- Took damage\n- Won the game\n";
+        }
+
+        achievementsListText.text = achievementsList;
     }
 }

@@ -24,8 +24,7 @@ public class PlayerMovementController : MonoBehaviour
     public float mouseSensitivity = 2f;
     float cameraVerticalRotation = 0f;
 
-    private void Awake()
-    {
+    private void Awake(){
         a = GetComponent<AudioSource>();
         controls = new PlayerControls();
         rb = GetComponent<Rigidbody>();
@@ -34,8 +33,7 @@ public class PlayerMovementController : MonoBehaviour
         controls.Player.Pause.performed += _ => Pause();
     }
 
-    private void Update()
-    {
+    private void Update(){
         Move(controls.Player.Move.ReadValue<Vector2>());
 
         float inputX = controls.Player.Look.ReadValue<Vector2>().x * mouseSensitivity;
@@ -48,21 +46,17 @@ public class PlayerMovementController : MonoBehaviour
         transform.Rotate(Vector3.up * inputX);
     }
 
-    private void Move(Vector2 direction)
-    {
+    private void Move(Vector2 direction){
         
-        if (controls.Player.Move.triggered)
-        {
+        if (controls.Player.Move.triggered){
             quest_system.move += walkSpeed;
             speed = walkSpeed;
         }
-        else if (controls.Player.Sneak.triggered)
-        {
+        else if (controls.Player.Sneak.triggered){
             quest_system.move += walkSpeed;
             speed = sneakSpeed;
         }
-        else if (controls.Player.Run.triggered)
-        {
+        else if (controls.Player.Run.triggered){
             quest_system.move += walkSpeed;
             speed = runSpeed;
         }
@@ -71,27 +65,22 @@ public class PlayerMovementController : MonoBehaviour
         rb.MovePosition(transform.position + transform.TransformDirection(moveDirection)); // Changed to transform.TransformDirection
     }
 
-    public void Jump()
-    {
-        if (isGrounded)
-        {
+    public void Jump(){
+        if (isGrounded){
             //a.PlayOneShot(jump, 1.0f);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             quest_system.jumps += 1;
         }
     }
 
-    private void Pause()
-    {
-        if (isPaused)
-        {
+    private void Pause(){
+        if (isPaused){
             isPaused = false;
             Time.timeScale = 1f;
             pauseMenuCanvas.SetActive(true);
         }
 
-        if (!isPaused)
-        {
+        if (!isPaused){
             isPaused = true;
             Time.timeScale = 0f;
             pauseMenuCanvas.SetActive(true);
@@ -99,18 +88,14 @@ public class PlayerMovementController : MonoBehaviour
 
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
+    private void OnCollisionEnter(Collision collision){
+        if (collision.gameObject.CompareTag("Ground")){
             isGrounded = true;
         }
     }
 
-    private void OnCollisionExit(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
+    private void OnCollisionExit(Collision collision){
+        if (collision.gameObject.CompareTag("Ground")){
             isGrounded = false;
         }
     }

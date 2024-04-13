@@ -7,7 +7,7 @@ public class PlayerStats : MonoBehaviour
     public GameObject deadMenuCanvas;
     public int Coins;
     public AudioSource a;
-
+    public Quest_System quest_System;
     public AudioClip hurt;
 
     public event System.Action<int, int> OnHealthChanged;
@@ -36,12 +36,14 @@ public class PlayerStats : MonoBehaviour
         if(collision.gameObject.CompareTag("Spike")){
             TakeDamage(10);
             //a.PlayOneShot(hurt, 1.0f);
+            quest_System.damage_taken += 10;
         }
 
         if (collision.gameObject.tag == "Enemy")
         {
             TakeDamage(15);
             //a.PlayOneShot(hurt, 1.0f);
+            quest_System.damage_taken += 15;
         }
     }
 

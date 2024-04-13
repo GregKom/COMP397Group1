@@ -371,6 +371,7 @@
 "Assets/inventoryscript.cs"
 "Assets/PauseGame.cs"
 "Assets/Player Controls.cs"
+"Assets/Quest_System.cs"
 "Assets/Scripts/clickbutton.cs"
 "Assets/Scripts/FollowPlayer.cs"
 "Assets/Scripts/HealthUI.cs"

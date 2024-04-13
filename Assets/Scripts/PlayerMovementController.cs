@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class PlayerMovementController : MonoBehaviour
 {
+    public Quest_System quest_system;
     public PlayerControls controls;
     public Rigidbody rb;
     public Transform cameraTransform;
@@ -49,16 +50,20 @@ public class PlayerMovementController : MonoBehaviour
 
     private void Move(Vector2 direction)
     {
+        
         if (controls.Player.Move.triggered)
         {
+            quest_system.move += walkSpeed;
             speed = walkSpeed;
         }
         else if (controls.Player.Sneak.triggered)
         {
+            quest_system.move += walkSpeed;
             speed = sneakSpeed;
         }
         else if (controls.Player.Run.triggered)
         {
+            quest_system.move += walkSpeed;
             speed = runSpeed;
         }
 
@@ -72,6 +77,7 @@ public class PlayerMovementController : MonoBehaviour
         {
             //a.PlayOneShot(jump, 1.0f);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            quest_system.jumps += 1;
         }
     }
 
